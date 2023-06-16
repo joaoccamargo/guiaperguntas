@@ -1,6 +1,6 @@
 import express from "express";
 import { connection } from "./database/database.js";
-import perguntaModel from "./database/Pergunta.js";
+import Pergunta from "./database/Pergunta.js";
 
 const app = express();
 const port = 8080;
@@ -20,8 +20,13 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
 // Rotas
-app.get("/", (request, response) => {        
-    response.render('index')
+app.get("/", (request, response) => {    
+    Pergunta.findAll({ raw: true, order:[ ['id', 'DESC'] ] }).then(perguntas => {
+        //ASC = Crescente || DESC = Decrescente
+        //console.log(perguntas)
+        response.render("index", { perguntas: perguntas});
+    })
+    
 })
 
 app.get("/perguntar", (request, response) => {
@@ -29,10 +34,20 @@ app.get("/perguntar", (request, response) => {
 })
 
 app.post("/salvarpergunta", (request, response) => {
-    let titulo = request.body.titulo;
-    let descricao = request.body.descricao;
+  let titulo = request.body.titulo;
+  let descricao = request.body.descricao;
+  // Pegando Model
+  //INSERT...into...SQL
+  Pergunta.create({
+    titulo: titulo,
+    descricao: descricao
+  }).then(() => {
+    response.redirect("/");
+  })
+})
 
-    response.send(`Pergunta enviada {Titulo:${titulo}, Descrição: ${descricao}}`);
+app.get("/pergunta/:id", (request, response) => {
+    
 })
 
 app.listen(port, () => {console.log(`Servidor iniciado na porta ${port}`)})
