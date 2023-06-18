@@ -47,7 +47,16 @@ app.post("/salvarpergunta", (request, response) => {
 })
 
 app.get("/pergunta/:id", (request, response) => {
-    
+    let id = request.params.id;
+    Pergunta.findOne({
+      where: {id: id}
+    }).then(pergunta => {
+      if(pergunta != undefined){
+        response.render("pergunta", {pergunta: pergunta});
+      }else{
+        response.redirect("/");
+      }
+    })
 })
 
 app.listen(port, () => {console.log(`Servidor iniciado na porta ${port}`)})
