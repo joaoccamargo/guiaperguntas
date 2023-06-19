@@ -1,6 +1,6 @@
 import express from "express";
 import { connection } from "./database/database.js";
-import Pergunta from "./database/Pergunta.js";
+import {Pergunta, Resposta} from "./database/Models.js";
 
 const app = express();
 const port = 8080;
